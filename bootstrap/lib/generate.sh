@@ -239,8 +239,13 @@ EOF
 #   $3 - Port (optional)
 generate_missing_files() {
     local project_dir="$1"
-    local project_type="$2"
+    local project_type_raw="$2"
     local port="${3:-8080}"
+    
+    # Clean project type - extract only the last line (actual type)
+    # This handles cases where debug logs contaminate the value
+    local project_type
+    project_type=$(echo "$project_type_raw" | tail -n 1 | tr -d '[:space:]')
     
     cd "$project_dir" || return 1
     
