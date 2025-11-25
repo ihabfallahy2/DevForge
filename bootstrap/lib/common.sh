@@ -7,14 +7,17 @@
 
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 
-# Colors for output
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly YELLOW='\033[1;33m'
-readonly BLUE='\033[0;34m'
-readonly MAGENTA='\033[0;35m'
-readonly CYAN='\033[0;36m'
-readonly NC='\033[0m' # No Color
+# Source guard - only define colors if not already defined
+if [[ -z "${RED:-}" ]]; then
+    # Colors for output
+    readonly RED='\033[0;31m'
+    readonly GREEN='\033[0;32m'
+    readonly YELLOW='\033[1;33m'
+    readonly BLUE='\033[0;34m'
+    readonly MAGENTA='\033[0;35m'
+    readonly CYAN='\033[0;36m'
+    readonly NC='\033[0m' # No Color
+fi
 
 # Global flags
 VERBOSE="${VERBOSE:-false}"
