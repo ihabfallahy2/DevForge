@@ -202,7 +202,14 @@ main() {
     required_secrets=$(get_required_secrets "$TARGET_DIR")
     
     if [[ -n "$required_secrets" ]]; then
-        generate_env_file "$TARGET_DIR" "$vault_name" "$required_secrets"
+        if ! generate_env_file "$TARGET_DIR" "$vault_name" "$required_secrets"; then
+            log_warn "Secret configuration incomplete"
+            if [[ "$NON_INTERACTIVE" == "true" ]]; then
+                log_error "Cannot configure secrets in non-interactive mode"
+                log_info "Please configure .env manually or use 1Password"
+                exit 1
+            fi
+        fi
     else
         log_info "No required secrets defined"
     fi
