@@ -8,7 +8,7 @@
 set -euo pipefail
 
 # Configuration
-REPO_URL="${BOOTSTRAP_REPO_URL:-https://github.com/ihabfallahy2/bootstrap}"
+REPO_URL="${BOOTSTRAP_REPO_URL:-https://github.com/ihabfallahy2/DevForge}"
 BRANCH="${BOOTSTRAP_BRANCH:-main}"
 INSTALL_DIR="/usr/local/bin"
 LIB_DIR="/usr/local/lib/bootstrap"
@@ -94,13 +94,13 @@ else
     
     # Download bootstrapper
     log_info "Downloading from ${REPO_URL}..."
-    if ! git clone --depth 1 --branch "$BRANCH" "$REPO_URL" bootstrap > /dev/null 2>&1; then
+    if ! git clone --depth 1 --branch "$BRANCH" "$REPO_URL" devforge > /dev/null 2>&1; then
         log_error "Failed to download bootstrapper"
         rm -rf "$TEMP_DIR"
         exit 1
     fi
     
-    cd bootstrap
+    cd devforge/bootstrap
     
     # Install
     log_info "Installing to system..."
