@@ -1,0 +1,58 @@
+name: Bootstrap and Deploy
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+  DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+jobs:
+  bootstrap-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install Bootstrap System
+        run: |
+          # Install the bootstrapper
+          sudo ./install.sh
+      
+      - name: Bootstrap Project
+        run: |
+          # Run bootstrap in non-interactive mode
+          bootstrap . \
+            --env=staging \
+            --vault="${{ secrets.VAULT_NAME }}" \
+            --non-interactive \
+            --skip-deploy
+      
+      - name: Run Tests
+        run: |
+          # Run project tests here
+          # Example for Spring Boot:
+          if [ -f "mvnw" ]; then
+            ./mvnw test
+          fi
+      
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Deploy using the configured alias or script
+          if [ -f "deploy.sh" ]; then
+            ./deploy.sh
+          fi
+      
+      - name: Health Check
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Wait for application to start
+          sleep 10
+          
+          # Check health endpoint
+          curl -f http://localhost:8080/actuator/health || exit 1

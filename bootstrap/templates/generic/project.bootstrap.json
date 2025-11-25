@@ -1,0 +1,35 @@
+{
+    "name": "generic-template",
+    "type": "generic",
+    "description": "Minimal generic project template",
+    "dependencies": {
+        "system": [
+            "docker",
+            "docker-compose",
+            "git"
+        ],
+        "runtime": [],
+        "optional": [
+            "1password-cli"
+        ]
+    },
+    "secrets": {
+        "vault": "template-prod",
+        "required": [
+            "API_KEY"
+        ]
+    },
+    "services": {
+        "databases": [],
+        "cache": []
+    },
+    "aliases": {
+        "deploy": "./deploy.sh",
+        "logs": "docker-compose logs -f",
+        "status": "docker-compose ps"
+    },
+    "hooks": {
+        "post-clone": "./setup.sh",
+        "post-deploy": "echo 'Generic Application deployed successfully!'"
+    }
+}

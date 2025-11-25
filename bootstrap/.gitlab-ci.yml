@@ -1,0 +1,61 @@
+stages:
+  - bootstrap
+  - test
+  - deploy
+
+variables:
+  OP_SERVICE_ACCOUNT_TOKEN: $OP_SERVICE_ACCOUNT_TOKEN
+  DISCORD_WEBHOOK_URL: $DISCORD_WEBHOOK_URL
+
+bootstrap:
+  stage: bootstrap
+  image: ubuntu:22.04
+  script:
+    - apt-get update && apt-get install -y curl git
+    - ./install.sh
+    - |
+      bootstrap . \
+        --env=staging \
+        --vault="$VAULT_NAME" \
+        --non-interactive \
+        --skip-deploy
+  artifacts:
+    paths:
+      - .env
+    expire_in: 1 hour
+
+test:
+  stage: test
+  image: ubuntu:22.04
+  dependencies:
+    - bootstrap
+  script:
+    - |
+      # Run tests based on project type
+      if [ -f "mvnw" ]; then
+        ./mvnw test
+      elif [ -f "package.json" ]; then
+        npm test
+      elif [ -f "requirements.txt" ]; then
+        pip install -r requirements.txt
+        pytest
+      fi
+
+deploy:
+  stage: deploy
+  image: ubuntu:22.04
+  dependencies:
+    - bootstrap
+  only:
+    - main
+  script:
+    - |
+      # Deploy the application
+      if [ -f "deploy.sh" ]; then
+        chmod +x deploy.sh
+        ./deploy.sh
+      fi
+    - |
+      # Health check
+      sleep 10
+      curl -f http://localhost:8080/actuator/health || exit 1

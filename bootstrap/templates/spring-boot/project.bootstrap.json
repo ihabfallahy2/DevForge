@@ -1,0 +1,41 @@
+{
+  "name": "spring-boot-template",
+  "type": "spring-boot",
+  "description": "Standard Spring Boot project template",
+  "dependencies": {
+    "system": [
+      "docker",
+      "docker-compose",
+      "git"
+    ],
+    "runtime": [
+      "java-17"
+    ],
+    "optional": [
+      "1password-cli"
+    ]
+  },
+  "secrets": {
+    "vault": "template-prod",
+    "required": [
+      "DATABASE_URL",
+      "DATABASE_USER",
+      "DATABASE_PASSWORD"
+    ]
+  },
+  "services": {
+    "databases": ["postgresql"],
+    "cache": ["redis"]
+  },
+  "aliases": {
+    "deploy": "./deploy.sh",
+    "logs": "docker-compose logs -f app",
+    "status": "docker-compose ps",
+    "stop": "docker-compose down",
+    "restart": "docker-compose restart app"
+  },
+  "hooks": {
+    "post-clone": "./setup.sh",
+    "post-deploy": "echo 'Spring Boot Application deployed successfully!'"
+  }
+}

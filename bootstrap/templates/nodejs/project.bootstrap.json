@@ -1,0 +1,45 @@
+{
+    "name": "nodejs-template",
+    "type": "nodejs",
+    "description": "Standard Node.js project template",
+    "dependencies": {
+        "system": [
+            "docker",
+            "docker-compose",
+            "git",
+            "nodejs"
+        ],
+        "runtime": [
+            "node-18"
+        ],
+        "optional": [
+            "1password-cli"
+        ]
+    },
+    "secrets": {
+        "vault": "template-prod",
+        "required": [
+            "DATABASE_URL",
+            "API_KEY"
+        ]
+    },
+    "services": {
+        "databases": [
+            "mongodb"
+        ],
+        "cache": [
+            "redis"
+        ]
+    },
+    "aliases": {
+        "deploy": "./deploy.sh",
+        "logs": "docker-compose logs -f app",
+        "status": "docker-compose ps",
+        "stop": "docker-compose down",
+        "restart": "docker-compose restart app"
+    },
+    "hooks": {
+        "post-clone": "./setup.sh",
+        "post-deploy": "echo 'Node.js Application deployed successfully!'"
+    }
+}

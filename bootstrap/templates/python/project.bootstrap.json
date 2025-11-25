@@ -1,0 +1,45 @@
+{
+    "name": "python-template",
+    "type": "python",
+    "description": "Standard Python project template",
+    "dependencies": {
+        "system": [
+            "docker",
+            "docker-compose",
+            "git",
+            "python3"
+        ],
+        "runtime": [
+            "python-3.11"
+        ],
+        "optional": [
+            "1password-cli"
+        ]
+    },
+    "secrets": {
+        "vault": "template-prod",
+        "required": [
+            "DATABASE_URL",
+            "SECRET_KEY"
+        ]
+    },
+    "services": {
+        "databases": [
+            "postgresql"
+        ],
+        "cache": [
+            "redis"
+        ]
+    },
+    "aliases": {
+        "deploy": "./deploy.sh",
+        "logs": "docker-compose logs -f app",
+        "status": "docker-compose ps",
+        "stop": "docker-compose down",
+        "restart": "docker-compose restart app"
+    },
+    "hooks": {
+        "post-clone": "./setup.sh",
+        "post-deploy": "echo 'Python Application deployed successfully!'"
+    }
+}
