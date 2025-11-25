@@ -27,6 +27,8 @@ source "${LIB_DIR}/secrets.sh"
 source "${LIB_DIR}/aliases.sh"
 # shellcheck source=lib/discord.sh
 source "${LIB_DIR}/discord.sh"
+# shellcheck source=lib/generate.sh
+source "${LIB_DIR}/generate.sh"
 
 #######################################
 # Global Variables
@@ -179,7 +181,14 @@ main() {
     
     read_bootstrap_config "$TARGET_DIR" || log_warn "No project.bootstrap.json found, using defaults"
     
-    # 4. Install Project Dependencies
+    # 4. Generate Missing Files
+    log_step "Checking Deployment Files"
+    if [[ "$project_type" != "generic" ]]; then
+        # Only generate for known project types
+        generate_missing_files "$TARGET_DIR" "$project_type" || log_warn "File generation skipped or failed"
+    fi
+    
+    # 5. Install Project Dependencies
     log_step "Installing Project Dependencies"
     local system_deps
     system_deps=$(get_required_dependencies "$TARGET_DIR")
