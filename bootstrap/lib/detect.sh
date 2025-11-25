@@ -14,7 +14,10 @@ source "${SCRIPT_DIR}/common.sh"
 # Configuration File
 #######################################
 
-readonly BOOTSTRAP_CONFIG_FILE="project.bootstrap.json"
+# Configuration file name - only define if not already defined
+if [[ -z "${BOOTSTRAP_CONFIG_FILE:-}" ]]; then
+    readonly BOOTSTRAP_CONFIG_FILE="project.bootstrap.json"
+fi
 
 #######################################
 # Project Type Detection
